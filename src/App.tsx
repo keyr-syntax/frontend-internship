@@ -5,13 +5,13 @@ import RegisterPage from "./components/Pages/RegisterPage";
 
 const App = () => {
   return (
-    <>
+    <div className="overflow-y-hidden">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>
-    </>
+    </div>
   );
 };
 

@@ -1,7 +1,4 @@
-"use client";
-
 import { Menu } from "lucide-react";
-// import Link from "";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../components/ui/sheet";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
@@ -29,16 +26,18 @@ const Navbar = () => {
 
   return (
     <header
-      className={`h-16 flex items-center justify-between font-railway transition-all duration-300  mx-auto fixed top-0 left-0 right-0 z-50 rounded-xl ${
-        isScrolled ? "w-9/12 top-6 backdrop-blur-2xl py-2 px-4 bg-white/10" : "w-11/12"
+      className={`h-16 flex items-center justify-between font-railway transition-all duration-300 mx-auto fixed top-0 left-0 right-0 z-50 px-4 w-screen bg-slate-900/20 md:bg-transparent ${
+        isScrolled ? "md:w-9/12 md:top-6 backdrop-blur-2xl py-2 bg-white/10" : "md:w-11/12 w-full"
       }`}
     >
-      <Link className="w-56 " to="/">
-        {/* <img src={"/logo.png"} alt="logo" width={240} height={240} className="mt-2" /> */}
-        <span className="text-2xl font-stint  ml-2">AI Therapy.</span>
+      {/* LOGO */}
+      <Link className="flex-shrink-0" to="/">
+        <span className="text-2xl font-stint">AI Therapy.</span>
       </Link>
-      <nav className=" font-raleway flex items-center justify-between w-full">
-        <div className=" ml-4 hidden md:flex gap-4 sm:gap-6 items-start justify-center">
+
+      {/* Desktop Navigation */}
+      <nav className="hidden md:flex items-center justify-between flex-grow">
+        <div className="ml-8 flex gap-6">
           <Link className="text-md font-medium hover:underline underline-offset-4" to="#home">
             Home
           </Link>
@@ -58,19 +57,21 @@ const Navbar = () => {
             Contact
           </Link>
         </div>
-        <div className="flex items-stretch justify-normal gap-3">
+        <div className="flex items-center gap-3 ml-4">
           <Link to="/register">
             <Button variant="ghost" size="default">
-              Register{" "}
+              Register
             </Button>
           </Link>
           <Link to="/login">
             <Button variant="default" size="default">
-              Login{" "}
+              Login
             </Button>
           </Link>
         </div>
       </nav>
+
+      {/* Mobile Menu Button */}
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="md:hidden">
@@ -78,23 +79,63 @@ const Navbar = () => {
             <span className="sr-only">Toggle menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="right">
-          <SheetTitle>{"  "}</SheetTitle>
-          <nav className="flex flex-col gap-4">
+        <SheetContent side="right" className="w-[300px]">
+          <SheetTitle className="text-left text-2xl font-stint mb-8">AI Therapy.</SheetTitle>
+          <nav className="flex flex-col gap-6">
             <Link
-              className="text-md font-medium hover:underline underline-offset-4"
-              to="#"
+              className="text-lg font-medium hover:underline underline-offset-4"
+              to="#home"
               onClick={() => setIsOpen(false)}
             >
-              Features
+              Home
             </Link>
             <Link
-              className="text-md font-medium hover:underline underline-offset-4"
-              to="#"
+              className="text-lg font-medium hover:underline underline-offset-4"
+              to="#about"
               onClick={() => setIsOpen(false)}
             >
               About
             </Link>
+            <Link
+              className="text-lg font-medium hover:underline underline-offset-4"
+              to="#services"
+              onClick={() => setIsOpen(false)}
+            >
+              Services
+            </Link>
+            <Link
+              className="text-lg font-medium hover:underline underline-offset-4"
+              to="/pricing"
+              onClick={() => setIsOpen(false)}
+            >
+              Pricing
+            </Link>
+            <Link
+              className="text-lg font-medium hover:underline underline-offset-4"
+              to="/faq"
+              onClick={() => setIsOpen(false)}
+            >
+              FAQ
+            </Link>
+            <Link
+              className="text-lg font-medium hover:underline underline-offset-4"
+              to="/contact"
+              onClick={() => setIsOpen(false)}
+            >
+              Contact
+            </Link>
+            <div className="flex flex-col gap-4 mt-4">
+              <Link to="/register" onClick={() => setIsOpen(false)}>
+                <Button variant="ghost" size="lg" className="w-full">
+                  Register
+                </Button>
+              </Link>
+              <Link to="/login" onClick={() => setIsOpen(false)}>
+                <Button variant="default" size="lg" className="w-full">
+                  Login
+                </Button>
+              </Link>
+            </div>
           </nav>
         </SheetContent>
       </Sheet>

@@ -7,7 +7,7 @@ import { Button } from "../ui/moving-border";
 const HomePage = () => {
   return (
     <section
-      className="relative flex items-center justify-center h-screen flex-col gap-4 w-11/12"
+      className="relative flex items-center justify-center h-screen flex-col gap-4 md:w-11/12 w-full overflow-hidden"
       id="home"
     >
       <Ripple />
