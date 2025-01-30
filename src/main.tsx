@@ -4,11 +4,13 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import "animate.css";
 import "@/styles/globals.css";
+import { Toaster } from "./components/ui/toaster.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <App />
+      <Toaster />
     </BrowserRouter>
   </StrictMode>
 );

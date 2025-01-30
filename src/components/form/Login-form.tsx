@@ -3,50 +3,65 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
+
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+interface LoginResponse {
+  success: boolean;
+  message: string;
+  user: {
+    username: string;
+    email: string;
+    password: string;
+  };
+}
 
 export default function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     const result = await signIn("credentials", {
-  //       redirect: false,
-  //       email,
-  //       password,
-  //     });
+  // const { toast } = useToast();
 
-  //     if (result?.error) {
-  //       setError("Invalid email or password");
-  //       toast({
-  //         title: "Error",
-  //         description: "Invalid email or password",
-  //         variant: "destructive",
-  //       });
-  //     } else {
-  //       toast({
-  //         title: "Success",
-  //         description: "You have successfully logged in!",
-  //       });
-  //       router.push("/chat");
-  //     }
-  //   } catch (error) {
-  //     console.error("An error occurred during login:", error);
-  //     setError("An error occurred. Please try again.");
-  //     toast({
-  //       title: "Error",
-  //       description: "An error occurred. Please try again.",
-  //       variant: "destructive",
-  //     });
-  //   }
-  // };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
-  const handleSubmit = () => {};
+    try {
+      const response = await axios.post<LoginResponse>("http://localhost:5000/user/login_user", {
+        email,
+        password,
+      });
+
+      console.log("Login response:", response.data);
+
+      if (response.data.success) {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        toast(response.data.message || "Login successful!");
+
+        navigate("/chat");
+      } else {
+        setError(response.data.message || "Login failed");
+        toast(response.data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      const errorMessage =
+        axios.isAxiosError(error) && error.response?.data?.message
+          ? error.response.data.message
+          : "Invalid email or password";
+
+      setError(errorMessage);
+      toast(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <form
@@ -60,7 +75,11 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
           Enter your email below to login to your account
         </p>
       </div>
-      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+      {error && (
+        <div className="bg-destructive/15 text-destructive px-4 py-2 rounded-md text-sm">
+          {error}
+        </div>
+      )}
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
@@ -71,12 +90,16 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
           />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="password">Password</Label>
-            <Link to="/" className="ml-auto text-sm underline-offset-4 hover:underline">
+            <Link
+              to="/forgot-password"
+              className="ml-auto text-sm text-primary underline-offset-4 hover:underline"
+            >
               Forgot your password?
             </Link>
           </div>
@@ -86,19 +109,24 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={isLoading}
           />
         </div>
         <Button
           type="submit"
           className="w-full bg-white text-black hover:text-white/80"
           variant="default"
+          disabled={isLoading}
         >
-          Login
+          {isLoading ? "Logging in..." : "Login"}
         </Button>
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <Link to="/register" className="underline underline-offset-4">
+        <Link
+          to="/register"
+          className="text-primary underline underline-offset-4 hover:text-primary/90"
+        >
           Sign up
         </Link>
       </div>

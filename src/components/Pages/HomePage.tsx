@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Navbar from "../Navbar";
 import Ripple from "../Ripple";
 import { Badge } from "../ui/badge";
@@ -29,12 +30,14 @@ const HomePage = () => {
           ✨ Begin Your Wellness Journey ✨
         </Button> */}
         <div className="mt-8">
-          <Button
-            borderRadius="0.75rem"
-            className=" border-neutral-200 dark:border-slate-800 relative z-10 hover:opacity-85 cursor-pointer"
-          >
-            ✨ Begin Your Wellness Journey ✨
-          </Button>
+          <Link to="/chat">
+            <Button
+              borderRadius="0.75rem"
+              className=" border-neutral-200 dark:border-slate-800 relative z-10 hover:opacity-85 cursor-pointer"
+            >
+              ✨ Begin Your Wellness Journey ✨
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

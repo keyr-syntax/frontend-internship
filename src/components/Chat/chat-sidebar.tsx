@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { getStoredUser } from "@/lib/auth";
 
 export default function ChatSidebar({ selectedId }: { selectedId: string }) {
   const conversations = [
@@ -16,11 +17,12 @@ export default function ChatSidebar({ selectedId }: { selectedId: string }) {
   //   const router = useRouter()
   const navigate = useNavigate();
   const [selectedChat, setSelectedChat] = useState<string>(selectedId);
+  const User = getStoredUser();
 
   const handleSelectMessage = (message: string) => {
     console.log("Sending message:", message);
     setSelectedChat(message);
-        toast("Selected chat: " + message);
+    toast("Selected chat: " + message);
     navigate(`/chat/${message}`);
   };
 
@@ -60,10 +62,10 @@ export default function ChatSidebar({ selectedId }: { selectedId: string }) {
       <div className="p-4 border-t mt-auto">
         <div className="flex items-center">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder.svg" />
-            <AvatarFallback>MP</AvatarFallback>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>U</AvatarFallback>
           </Avatar>
-          <span className="ml-2 text-sm">My Profile</span>
+          <span className="ml-2 text-sm">{User?.username}</span>
         </div>
       </div>
     </div>

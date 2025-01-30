@@ -1,7 +1,8 @@
 "use client";
 import signUpImage from "@/assets/signup.jpg";
-import Loader from "@/components/loader";
 import RegisterForm from "../form/Register-form";
+
+
 
 export default function RegisterPage() {
   return (
