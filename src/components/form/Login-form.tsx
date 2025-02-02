@@ -42,6 +42,7 @@ export default function LoginForm({
           password,
         },
         {
+          // Enabled Axios to accept cookies from the backend
           withCredentials: true,
         }
       );

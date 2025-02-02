@@ -44,6 +44,7 @@ export default function RegisterForm({
           password,
         },
         {
+          // Enabled Axios to accept cookies from the backend
           withCredentials: true,
         }
       );
