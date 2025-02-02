@@ -42,6 +42,9 @@ export default function RegisterForm({
           username,
           email,
           password,
+        },
+        {
+          withCredentials: true,
         }
       );
 
@@ -49,7 +52,7 @@ export default function RegisterForm({
 
       if (response.data.success) {
         toast(response.data.message);
-        navigate("/login");
+        navigate("/chat");
       } else {
         setError(response.data.message || "Registration failed");
         toast(error);
@@ -69,7 +72,11 @@ export default function RegisterForm({
   };
 
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props} onSubmit={handleSubmit}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Create your account</h1>
         <p className="text-balance text-sm text-muted-foreground">

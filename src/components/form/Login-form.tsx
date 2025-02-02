@@ -18,7 +18,10 @@ interface LoginResponse {
   };
 }
 
-export default function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
+export default function LoginForm({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"form">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,10 +35,16 @@ export default function LoginForm({ className, ...props }: React.ComponentPropsW
     setIsLoading(true);
 
     try {
-      const response = await axios.post<LoginResponse>("http://localhost:5000/user/login_user", {
-        email,
-        password,
-      });
+      const response = await axios.post<LoginResponse>(
+        "http://localhost:5000/user/login_user",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       console.log("Login response:", response.data);
 
