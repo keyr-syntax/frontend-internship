@@ -1,12 +1,16 @@
-import { Menu } from "lucide-react";
+import { Menu, UserIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../components/ui/sheet";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { isAuthenticated } from "@/lib/auth";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const isAuth = isAuthenticated();
+  console.log(isAuth);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,28 +51,39 @@ const Navbar = () => {
           <Link className="text-md font-medium hover:underline underline-offset-4" to="#services">
             Services
           </Link>
-          <Link className="text-md font-medium hover:underline underline-offset-4" to="/pricing">
+          <Link className="text-md font-medium hover:underline underline-offset-4" to="#pricing">
             Pricing
           </Link>
-          <Link className="text-md font-medium hover:underline underline-offset-4" to="/faq">
+          <Link className="text-md font-medium hover:underline underline-offset-4" to="#faq">
             FAQ
           </Link>
-          <Link className="text-md font-medium hover:underline underline-offset-4" to="/contact">
+          <Link className="text-md font-medium hover:underline underline-offset-4" to="#contact">
             Contact
           </Link>
         </div>
-        <div className="flex items-center gap-3 ml-4">
-          <Link to="/register">
-            <Button variant="ghost" size="default">
-              Register
-            </Button>
+
+        {!isAuth ? (
+          <div className="flex items-center gap-3 ml-4">
+            <Link to="/register">
+              <Button variant="ghost" size="default">
+                Register
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button variant="default" size="default">
+                Login
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <Link to="/chat">
+            <Avatar>
+              <AvatarFallback>
+                <UserIcon />
+              </AvatarFallback>
+            </Avatar>
           </Link>
-          <Link to="/login">
-            <Button variant="default" size="default">
-              Login
-            </Button>
-          </Link>
-        </div>
+        )}
       </nav>
 
       {/* Mobile Menu Button */}
@@ -124,18 +139,29 @@ const Navbar = () => {
             >
               Contact
             </Link>
-            <div className="flex flex-col gap-4 mt-4">
-              <Link to="/register" onClick={() => setIsOpen(false)}>
-                <Button variant="ghost" size="lg" className="w-full">
-                  Register
-                </Button>
+
+            {!isAuth ? (
+              <div className="flex flex-col gap-4 mt-4">
+                <Link to="/register" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" size="lg" className="w-full">
+                    Register
+                  </Button>
+                </Link>
+                <Link to="/login" onClick={() => setIsOpen(false)}>
+                  <Button variant="default" size="lg" className="w-full">
+                    Login
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <Link to="/chat">
+                <Avatar>
+                  <AvatarFallback>
+                    <UserIcon />
+                  </AvatarFallback>
+                </Avatar>
               </Link>
-              <Link to="/login" onClick={() => setIsOpen(false)}>
-                <Button variant="default" size="lg" className="w-full">
-                  Login
-                </Button>
-              </Link>
-            </div>
+            )}
           </nav>
         </SheetContent>
       </Sheet>
