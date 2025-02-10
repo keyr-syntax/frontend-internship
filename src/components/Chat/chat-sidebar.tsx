@@ -1,42 +1,40 @@
-import { MessageCircle, MessageSquarePlus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  MessageCircle,
+  MessageCircleDashed,
+  MessageCircleHeart,
+  MessageSquarePlus,
+} from "lucide-react";
+import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { useState } from "react";
-import { getStoredUser } from "@/lib/auth";
+import { useChat } from "../../context/ChatContext";
+import { getStoredUser } from "../../lib/auth";
 
 export default function ChatSidebar({ selectedId }: { selectedId: string }) {
-  const conversations = [
-    { id: "1", title: "Mental Health Check-in" },
-    { id: "2", title: "Stress Management" },
-    { id: "3", title: "Anxiety Discussion" },
-  ];
-
-  //   const router = useRouter()
   const navigate = useNavigate();
-  const [selectedChat, setSelectedChat] = useState<string>(selectedId);
-  const User = getStoredUser();
+  const { chats, setCurrentChat } = useChat();
+  const user = getStoredUser();
 
-  const handleSelectMessage = (message: string) => {
-    console.log("Sending message:", message);
-    setSelectedChat(message);
-    toast("Selected chat: " + message);
-    navigate(`/chat/${message}`);
+  const handleSelectMessage = (chatId: string) => {
+    const selectedChat = chats.find((chat) => chat.id === chatId);
+    if (selectedChat) {
+      setCurrentChat(selectedChat);
+      navigate(`/chat/${chatId}`);
+    }
   };
 
   const newChat = () => {
-    console.log("New chat");
-    toast("New chat");
-    setSelectedChat("");
+    setCurrentChat(null);
     navigate(`/chat`);
   };
+
+  console.log(chats);
 
   return (
     <div className="w-80 border-r flex flex-col bg-background">
       <div className="p-4 border-b">
-        <h1 className="text-xl font-semibold">Therapist</h1>
+        <h1 className="text-xl font-semibold">AI Chat</h1>
       </div>
       <div className="p-4">
         <Button className="w-full" variant="secondary" onClick={newChat}>
@@ -46,15 +44,15 @@ export default function ChatSidebar({ selectedId }: { selectedId: string }) {
       </div>
       <ScrollArea className="flex-1">
         <div className="space-y-2">
-          {conversations.map((conversation) => (
+          {chats.map((chat) => (
             <Button
-              key={conversation.id}
-              variant={selectedChat === conversation.id ? "secondary" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => handleSelectMessage(conversation.id)}
+              key={chat.id}
+              variant={selectedId === chat.id ? "secondary" : "ghost"}
+              className="w-11/12 mx-auto justify-start"
+              onClick={() => handleSelectMessage(chat.id)}
             >
-              <MessageCircle className="mr-2 h-4 w-4" />
-              {conversation.title}
+              <MessageCircleHeart className="mr-` h-4 w-4" />
+              {chat.title}
             </Button>
           ))}
         </div>
@@ -65,7 +63,7 @@ export default function ChatSidebar({ selectedId }: { selectedId: string }) {
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
-          <span className="ml-2 text-sm">{User?.username}</span>
+          <span className="ml-2 text-sm">{user?.username}</span>
         </div>
       </div>
     </div>

@@ -1,19 +1,36 @@
+"use client";
+
 import { useState } from "react";
 import { SendHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
+import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useChat } from "../../context/ChatContext";
+import toast from "react-hot-toast";
+import Loader from "../Loader";
 
 export default function ChatInput() {
   const [message, setMessage] = useState("");
-  const [disabled, setDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { currentChat, startNewChat, continueChat } = useChat();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setDisabled(true);
-    toast(message);
     if (!message.trim()) return;
-    setMessage("");
+
+    setIsLoading(true);
+    try {
+      if (currentChat) {
+        await continueChat(message);
+      } else {
+        await startNewChat(message);
+      }
+      setMessage("");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast(" Error sending message");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -22,11 +39,12 @@ export default function ChatInput() {
         placeholder="Start talking with AI..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        disabled={disabled}
+        disabled={isLoading}
         className="flex-1"
       />
-      <Button type="submit" disabled={disabled || !message.trim()}>
-        <SendHorizontal className="h-4 w-4" />
+      <Button type="submit" disabled={isLoading || !message.trim()}>
+        {isLoading ? <Loader /> : <SendHorizontal className="h-4 w-4" />}
+
         <span className="sr-only">Send message</span>
       </Button>
     </form>
