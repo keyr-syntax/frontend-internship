@@ -2,7 +2,13 @@
 import { Mails, UserIcon, FishIcon as Whale } from "lucide-react";
 import { useChat } from "../../context/ChatContext";
 import { useParams } from "react-router-dom";
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from "react";
+import {
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+  Key,
+} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function ChatMessages() {
@@ -18,7 +24,9 @@ export default function ChatMessages() {
         <div className="rounded-full bg-primary/10 p-4 mb-4">
           <Whale className="h-12 w-12 text-primary" />
         </div>
-        <h2 className="text-2xl font-semibold mb-2">Hi, I'm your AI assistant.</h2>
+        <h2 className="text-2xl font-semibold mb-2">
+          Hi, I'm your AI assistant.
+        </h2>
         <p className="text-muted-foreground">How can I help you today?</p>
       </div>
     );
@@ -61,7 +69,9 @@ export default function ChatMessages() {
             )}
             <div
               className={`max-w-[60%] p-3 rounded-lg ${
-                message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                message.role === "user"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted"
               }`}
             >
               {message.content}

@@ -27,7 +27,9 @@ interface ChatContextType {
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [currentChat, setCurrentChat] = useState<Chat | null>(null);
   const [, setUser] = useState<User | null>(null);
@@ -96,9 +98,12 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchPreviousChats = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/chat/previous_chats", {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        "http://localhost:5000/chat/previous_chats",
+        {
+          withCredentials: true,
+        }
+      );
 
       const data = response.data;
       console.log("DATA : ", data.chat);

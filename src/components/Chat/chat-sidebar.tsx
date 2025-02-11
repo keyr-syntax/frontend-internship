@@ -1,26 +1,34 @@
-import {
-  MessageCircle,
-  MessageCircleDashed,
-  MessageCircleHeart,
-  MessageSquarePlus,
-} from "lucide-react";
+import { MessageCircleHeart, MessageSquarePlus } from "lucide-react";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { useChat } from "../../context/ChatContext";
 import { getStoredUser } from "../../lib/auth";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function ChatSidebar({ selectedId }: { selectedId: string }) {
   const navigate = useNavigate();
   const { chats, setCurrentChat } = useChat();
   const user = getStoredUser();
 
-  const handleSelectMessage = (chatId: string) => {
-    const selectedChat = chats.find((chat) => chat.id === chatId);
-    if (selectedChat) {
-      setCurrentChat(selectedChat);
-      navigate(`/chat/${chatId}`);
+  const handleSelectMessage = async (chatId: string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/chat/find_chat/${chatId}`,
+        { withCredentials: true }
+      );
+
+      const data = response.data;
+      if (data.success) {
+        setCurrentChat(data.chat.messages);
+        navigate(`/chat/${chatId}`);
+      } else {
+        toast.error("Failed to fetch conversation");
+      }
+    } catch (error) {
+      console.log("Error while fetching chat by ID", error);
     }
   };
 
