@@ -3,7 +3,6 @@ import Navbar from "../Navbar";
 import Ripple from "../Ripple";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/moving-border";
-// import { Button } from "../ui/button";
 
 const HomePage = () => {
   return (
