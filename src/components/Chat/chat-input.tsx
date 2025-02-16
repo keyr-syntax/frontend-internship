@@ -1,52 +1,41 @@
-"use client";
+import React, { useState, FormEvent } from "react";
+import { Send } from "lucide-react";
 
-import { useState } from "react";
-import { SendHorizontal } from "lucide-react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { useChat } from "../../context/ChatContext";
-import toast from "react-hot-toast";
-import Loader from "../Loader";
+interface ChatInputProps {
+  onSendMessage: (message: string) => void;
+  disabled?: boolean;
+}
 
-export default function ChatInput() {
+export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { currentChat, startNewChat, continueChat } = useChat();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!message.trim()) return;
-
-    setIsLoading(true);
-    try {
-      if (currentChat) {
-        await continueChat(message);
-      } else {
-        await startNewChat(message);
-      }
+    if (message.trim() && !disabled) {
+      onSendMessage(message);
       setMessage("");
-    } catch (error) {
-      console.error("Error sending message:", error);
-      toast(" Error sending message");
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2 px-4 -py-2">
-      <Input
-        placeholder="Start talking with AI..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        disabled={isLoading}
-        className="flex-1"
-      />
-      <Button type="submit" disabled={isLoading || !message.trim()}>
-        {isLoading ? <Loader /> : <SendHorizontal className="h-4 w-4" />}
-
-        <span className="sr-only">Send message</span>
-      </Button>
+    <form onSubmit={handleSubmit} className="p-4 border-t border-gray-800 bg-gray-900">
+      <div className="flex gap-4">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type your message..."
+          disabled={disabled}
+          className="flex-1 p-2 bg-gray-800 border border-gray-700 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+        />
+        <button
+          type="submit"
+          disabled={disabled || !message.trim()}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Send className="h-5 w-5" />
+        </button>
+      </div>
     </form>
   );
 }

@@ -1,78 +1,85 @@
-import { MessageCircleHeart, MessageSquarePlus } from "lucide-react";
-import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
+import { useState } from "react";
+import { Chat } from "@/types/chat";
+import { Plus, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useNavigate } from "react-router-dom";
-import { useChat } from "../../context/ChatContext";
-import { getStoredUser } from "../../lib/auth";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { getStoredUser, logout } from "@/lib/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
-export default function ChatSidebar({ selectedId }: { selectedId: string }) {
-  const navigate = useNavigate();
-  const { chats, setCurrentChat } = useChat();
+interface ChatSidebarProps {
+  chats: Chat[];
+  activeChat: Chat | null;
+  onSelectChat: (chat: Chat) => void;
+  onNewChat: () => void;
+}
+
+export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: ChatSidebarProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
   const user = getStoredUser();
+  const navigate = useNavigate();
 
-  const handleSelectMessage = async (chatId: string) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:5000/chat/find_chat/${chatId}`,
-        { withCredentials: true }
-      );
-
-      const data = response.data;
-      if (data.success) {
-        setCurrentChat(data.chat.messages);
-        navigate(`/chat/${chatId}`);
-      } else {
-        toast.error("Failed to fetch conversation");
-      }
-    } catch (error) {
-      console.log("Error while fetching chat by ID", error);
-    }
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
-
-  const newChat = () => {
-    setCurrentChat(null);
-    navigate(`/chat`);
-  };
-
-  console.log(chats);
 
   return (
-    <div className="w-80 border-r flex flex-col bg-background">
+    <div className="w-64 bg-gray-950 border-r h-full flex flex-col">
       <div className="p-4 border-b">
-        <h1 className="text-xl font-semibold">AI Chat</h1>
+        <Link to="/">
+          <h1 className="text-xl font-semibold">AI Chat</h1>
+        </Link>
       </div>
       <div className="p-4">
-        <Button className="w-full" variant="secondary" onClick={newChat}>
-          <MessageSquarePlus className="mr-2 h-4 w-4" />
-          New chat
-        </Button>
+        <button
+          onClick={onNewChat}
+          className="w-full flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+        >
+          <Plus className="h-5 w-5" />
+          New Chat
+        </button>
       </div>
-      <ScrollArea className="flex-1">
-        <div className="space-y-2">
-          {chats.map((chat) => (
-            <Button
-              key={chat.id}
-              variant={selectedId === chat.id ? "secondary" : "ghost"}
-              className="w-11/12 mx-auto justify-start"
-              onClick={() => handleSelectMessage(chat.id)}
-            >
-              <MessageCircleHeart className="mr-` h-4 w-4" />
-              {chat.title}
-            </Button>
-          ))}
-        </div>
-      </ScrollArea>
-      <div className="p-4 border-t mt-auto">
-        <div className="flex items-center">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
-          <span className="ml-2 text-sm">{user?.username}</span>
-        </div>
+      <div className="overflow-y-scroll flex-1">
+        {chats.map((chat) => (
+          <button
+            key={chat.chat_ID}
+            onClick={() => onSelectChat(chat)}
+            className={`w-full flex items-center gap-2 p-2 hover:bg-gray-700 mx-2 bg-gray-950 ${
+              activeChat?.chat_ID === chat._id ? "bg-slate-700" : ""
+            }`}
+          >
+            <span className="text-sm truncate">{chat.chat_title}</span>
+          </button>
+        ))}
+      </div>
+      <div className="p-3 border-t mt-auto">
+        {/* Modal Trigger (Avatar) */}
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogTrigger className=" w-full h-full">
+            <div className="flex items-center">
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+              <span className="ml-2 text-sm">{user?.username}</span>
+            </div>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Logout</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-gray-500">Are you sure you want to log out?</p>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              >
+                <LogOut className="h-5 w-5" />
+                Logout
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

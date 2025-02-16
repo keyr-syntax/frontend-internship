@@ -1,36 +1,58 @@
-import { useParams } from "react-router-dom";
-import ChatInput from "../Chat/chat-input";
-import ChatMessages from "../Chat/chat-messages";
-import ChatSidebar from "../Chat/chat-sidebar";
-import { useChat } from "../../context/ChatContext";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useChatContext } from "../../context/ChatContext";
+import { fetchChat } from "../../api/chatApi";
+import { toast } from "react-hot-toast";
+import { ChatLayout } from "../Chat/chat-layout";
+import { WelcomeScreen } from "../WelcomeScreen";
 
 export default function ChatPage() {
-  const { id } = useParams<{ id: string }>();
-  const { chats, setCurrentChat } = useChat();
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { state, dispatch } = useChatContext();
 
   useEffect(() => {
     if (id) {
-      const chat = chats.find((chat) => chat.id === id);
-      if (chat) {
-        setCurrentChat(chat);
-      }
+      const loadChat = async () => {
+        try {
+          dispatch({ type: "SET_LOADING", payload: true });
+          const response = await fetchChat(id);
+          if (response.success && response.chat) {
+            dispatch({
+              type: "SET_ACTIVE_CHAT",
+              payload: {
+                chat_ID: id,
+                chat_title: response.chat.chat_title || "Untitled Chat",
+                messages: response.chat.messages.map((msg: any) => ({
+                  role: msg.role,
+                  content: msg.content,
+                  timestamp: new Date(msg.timestamp),
+                })),
+              },
+            });
+          } else {
+            toast.error("Chat not found");
+            navigate("/chat");
+          }
+        } catch (error) {
+          toast.error("Failed to load chat");
+          navigate("/chat");
+        } finally {
+          dispatch({ type: "SET_LOADING", payload: false });
+        }
+      };
+
+      loadChat();
     } else {
-      setCurrentChat(null);
+      // Reset active chat when on /chat route
+      dispatch({ type: "SET_ACTIVE_CHAT", payload: null });
     }
-  }, [id, chats, setCurrentChat]);
+  }, [id, dispatch, navigate]);
 
   return (
-    <div className="flex h-screen bg-background">
-      <ChatSidebar selectedId={id || ""} />
-      <main className="flex-1 flex flex-col">
-        <div className="flex-1 overflow-auto">
-          <ChatMessages />
-        </div>
-        <div className="p-4 border-t">
-          <ChatInput />
-        </div>
-      </main>
+    <div className="h-screen flex">
+      <ChatLayout>{!id && !state.activeChat?.messages?.length && <WelcomeScreen />}</ChatLayout>
     </div>
   );
 }

@@ -1,148 +1,76 @@
-import type React from "react";
-import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
-import { type User, getStoredUser } from "../lib/auth";
-import toast from "react-hot-toast";
+import React, { createContext, useContext, useReducer, ReactNode } from "react";
+import { Chat, Message } from "../types/chat";
 
-interface Message {
-  role: "user" | "ai";
-  content: string;
-}
-
-interface Chat {
-  id: string;
-  title: string;
-  messages: Message[];
-}
-
-interface ChatContextType {
+interface ChatState {
   chats: Chat[];
-  currentChat: Chat | null;
-  setCurrentChat: (chat: Chat | null) => void;
-  addMessage: (message: Message) => void;
-  startNewChat: (question: string) => Promise<void>;
-  continueChat: (question: string) => Promise<void>;
-  fetchPreviousChats: () => Promise<void>;
+  activeChat: Chat | null;
+  loading: boolean;
+  error: string | null;
 }
 
-const ChatContext = createContext<ChatContextType | undefined>(undefined);
+type ChatAction =
+  | { type: "SET_CHATS"; payload: Chat[] }
+  | { type: "SET_ACTIVE_CHAT"; payload: Chat }
+  | { type: "ADD_MESSAGE"; payload: { chatId: string; message: Message } }
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "SET_ERROR"; payload: string | null };
 
-export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [currentChat, setCurrentChat] = useState<Chat | null>(null);
-  const [, setUser] = useState<User | null>(null);
+const ChatContext = createContext<{
+  state: ChatState;
+  dispatch: React.Dispatch<ChatAction>;
+} | null>(null);
 
-  useEffect(() => {
-    const storedUser = getStoredUser();
-    setUser(storedUser);
-    if (storedUser) {
-      fetchPreviousChats();
-    }
-  }, []);
-
-  const addMessage = (message: Message) => {
-    if (currentChat) {
-      setCurrentChat({
-        ...currentChat,
-        messages: [...currentChat.messages, message],
-      });
-    }
-  };
-
-  const startNewChat = async (question: string) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/chat/chat_with_ai",
-        { chat_ID: "", user_question: question },
-        { withCredentials: true }
-      );
-
-      const data = response.data;
-      const newChat: Chat = {
-        id: data.chat_ID,
-        title: data.chat_title,
-        messages: [
-          { role: "user", content: question },
-          { role: "ai", content: data.AI_response },
-        ],
-      };
-
-      setChats([newChat, ...chats]);
-      setCurrentChat(newChat);
-    } catch (error) {
-      console.error("Error starting new chat:", error);
-      toast("Error starting new chat");
-    }
-  };
-
-  const continueChat = async (question: string) => {
-    if (!currentChat) return;
-
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/chat/chat_with_ai",
-        { chat_ID: currentChat.id, user_question: question },
-        { withCredentials: true }
-      );
-
-      const data = response.data;
-      addMessage({ role: "user", content: question });
-      addMessage({ role: "ai", content: data.AI_response });
-    } catch (error) {
-      console.error("Error continuing chat:", error);
-      toast("Error continuing chat ");
-    }
-  };
-
-  const fetchPreviousChats = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/chat/previous_chats",
-        {
-          withCredentials: true,
-        }
-      );
-
-      const data = response.data;
-      console.log("DATA : ", data.chat);
-
-      setChats(
-        data.allChats.map((chat: any) => ({
-          id: chat._id,
-          title: chat.chat_title,
-          messages: chat,
-        }))
-      );
-    } catch (error) {
-      console.error("Error fetching previous chats:", error);
-      toast("Error fetching all chats ");
-    }
-  };
-
-  return (
-    <ChatContext.Provider
-      value={{
-        chats,
-        currentChat,
-        setCurrentChat,
-        addMessage,
-        startNewChat,
-        continueChat,
-        fetchPreviousChats,
-      }}
-    >
-      {children}
-    </ChatContext.Provider>
-  );
+const initialState: ChatState = {
+  chats: [],
+  activeChat: null,
+  loading: false,
+  error: null,
 };
 
-export const useChat = () => {
+function chatReducer(state: ChatState, action: ChatAction): ChatState {
+  switch (action.type) {
+    case "SET_CHATS":
+      return { ...state, chats: action.payload };
+    case "SET_ACTIVE_CHAT":
+      return { ...state, activeChat: action.payload };
+    case "ADD_MESSAGE":
+      return {
+        ...state,
+        chats: state.chats.map((chat) =>
+          chat.chat_ID === action.payload.chatId
+            ? {
+                ...chat,
+                messages: [...chat.messages, action.payload.message],
+              }
+            : chat
+        ),
+        activeChat:
+          state.activeChat?.chat_ID === action.payload.chatId
+            ? {
+                ...state.activeChat,
+                messages: [...state.activeChat.messages, action.payload.message],
+              }
+            : state.activeChat,
+      };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+    case "SET_ERROR":
+      return { ...state, error: action.payload };
+    default:
+      return state;
+  }
+}
+
+export function ChatProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(chatReducer, initialState);
+
+  return <ChatContext.Provider value={{ state, dispatch }}>{children}</ChatContext.Provider>;
+}
+
+export function useChatContext() {
   const context = useContext(ChatContext);
-  if (context === undefined) {
-    toast("useChat must be used within a ChatProvider ");
-    throw new Error("useChat must be used within a ChatProvider");
+  if (!context) {
+    throw new Error("useChatContext must be used within a ChatProvider");
   }
   return context;
-};
+}
