@@ -3,6 +3,7 @@ import { Heart, Smile, BookOpen, Send, Moon } from "lucide-react";
 import { useChatContext } from "../context/ChatContext";
 import { sendMessage } from "../api/chatApi";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 // Updated examples for therapy-focused prompts
 const examples = [
@@ -61,7 +62,9 @@ export function WelcomeScreen() {
 
       dispatch({ type: "SET_ACTIVE_CHAT", payload: newChat });
       navigate(`/chat/${response.chat_ID}`);
+      window.location.reload();
     } catch (error) {
+      toast.error("Failed to start chat. Please try again.");
       console.error("Failed to start chat:", error);
     } finally {
       setIsLoading(false);
@@ -70,7 +73,7 @@ export function WelcomeScreen() {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-4 py-8">
-      <div className="max-w-3xl w-full space-y-8">
+      <div className="max-w-4xl w-full space-y-8">
         <div className="text-center space-y-4">
           <h1 className="text-4xl font-bold text-gray-300">Welcome to AI Therapy Companion</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -79,7 +82,6 @@ export function WelcomeScreen() {
           </p>
         </div>
 
-        {/* Direct Input Section */}
         <div className="w-full  mx-auto">
           <form
             onSubmit={(e) => {
@@ -118,11 +120,11 @@ export function WelcomeScreen() {
               key={index}
               onClick={() => startNewChat(example.prompt)}
               disabled={isLoading}
-              className="flex items-start p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-start p-4 bg-slate-900 rounded-lg border border-slate-800 hover:border-blue-500 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div className="flex-shrink-0 mr-4 text-blue-500">{example.icon}</div>
               <div className="text-left">
-                <h3 className="font-medium text-gray-900">{example.title}</h3>
+                <h3 className="font-medium text-gray-300">{example.title}</h3>
                 <p className="mt-1 text-sm text-gray-500">{example.prompt}</p>
               </div>
             </button>

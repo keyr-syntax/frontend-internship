@@ -79,6 +79,7 @@ export function ChatLayout({ children }: { children?: React.ReactNode }) {
   const handleNewChat = () => {
     navigate("/chat");
   };
+  console.log("messages", state.activeChat?.chat_title);
 
   return (
     <div className="h-screen flex  w-full">
@@ -91,6 +92,9 @@ export function ChatLayout({ children }: { children?: React.ReactNode }) {
         onNewChat={handleNewChat}
       />
       <div className=" flex flex-col w-full">
+        <h1 className="w-full text-center sticky left-0 right-5 top-0 z-50 backdrop-blur- p-4 ">
+          {state.activeChat?.chat_title}
+        </h1>
         {children || (
           <>
             <ChatMain messages={state.activeChat?.messages || []} loading={state.loading} />

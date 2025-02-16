@@ -20,6 +20,8 @@ const config: Config = {
         stint: ["Stint Ultra Expanded", "cursive"],
       },
       colors: {
+        "ai-bg": "#1a1a1a",
+        "user-bg": "#2563eb",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

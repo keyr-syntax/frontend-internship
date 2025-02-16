@@ -1,5 +1,10 @@
+import { useState } from "react";
 import { Chat } from "@/types/chat";
-import { MessageSquare, Plus } from "lucide-react";
+import { Plus, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getStoredUser, logout } from "@/lib/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 interface ChatSidebarProps {
   chats: Chat[];
@@ -9,12 +14,21 @@ interface ChatSidebarProps {
 }
 
 export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: ChatSidebarProps) {
-  console.log(chats[0]?.id);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+  const user = getStoredUser();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <div className="w-64 bg-gray-950 border-r h-full flex flex-col">
       <div className="p-4 border-b">
-        <h1 className="text-xl font-semibold">AI Chat</h1>
+        <Link to="/">
+          <h1 className="text-xl font-semibold">AI Chat</h1>
+        </Link>
       </div>
       <div className="p-4">
         <button
@@ -25,18 +39,47 @@ export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: Chat
           New Chat
         </button>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <div className="overflow-y-scroll flex-1">
         {chats.map((chat) => (
           <button
             key={chat.chat_ID}
             onClick={() => onSelectChat(chat)}
-            className={`w-full flex items-center gap-2 p-2 hover:bg-gray-700 mx-2  bg-gray-950 ${
-              activeChat?.chat_ID === chat.chat_ID ? "bg-gray-100" : ""
+            className={`w-full flex items-center gap-2 p-2 hover:bg-gray-700 mx-2 bg-gray-950 ${
+              activeChat?.chat_ID === chat._id ? "bg-slate-700" : ""
             }`}
           >
             <span className="text-sm truncate">{chat.chat_title}</span>
           </button>
         ))}
+      </div>
+      <div className="p-3 border-t mt-auto">
+        {/* Modal Trigger (Avatar) */}
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogTrigger className=" w-full h-full">
+            <div className="flex items-center">
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+              <span className="ml-2 text-sm">{user?.username}</span>
+            </div>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Logout</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-gray-500">Are you sure you want to log out?</p>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              >
+                <LogOut className="h-5 w-5" />
+                Logout
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
