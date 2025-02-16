@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { fetchPreviousChats, sendMessage } from "@/api/chatApi";
 import { useChatContext } from "@/context/ChatContext";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChatSidebar } from "./chat-sidebar";
 import { ChatMain } from "./chat-main";
 import { ChatInput } from "./chat-input";
 
-export function ChatLayout() {
+export function ChatLayout({ children }: { children?: React.ReactNode }) {
   const { state, dispatch } = useChatContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadChats = async () => {
@@ -18,7 +21,6 @@ export function ChatLayout() {
         }
       } catch (error) {
         dispatch({ type: "SET_ERROR", payload: "Failed to load chats" });
-        console.log("error : ", error);
       } finally {
         dispatch({ type: "SET_LOADING", payload: false });
       }
@@ -36,8 +38,6 @@ export function ChatLayout() {
       timestamp: new Date(),
     };
 
-    const chatId = state.activeChat?.chat_ID || "";
-
     if (state.activeChat) {
       dispatch({
         type: "ADD_MESSAGE",
@@ -47,30 +47,27 @@ export function ChatLayout() {
 
     try {
       dispatch({ type: "SET_LOADING", payload: true });
-      const response = await sendMessage(chatId, content);
+      const response = await sendMessage(state.activeChat?.chat_ID || "", content);
 
-      if (response.success) {
-        const aiMessage = {
-          role: "assistant" as const,
-          content: response.AI_response,
-          timestamp: new Date(),
+      const aiMessage = {
+        role: "assistant" as const,
+        content: response.AI_response,
+        timestamp: new Date(),
+      };
+
+      if (!state.activeChat) {
+        const newChat = {
+          chat_ID: response.chat_ID,
+          chat_title: response.chat_title,
+          messages: [userMessage, aiMessage],
         };
-
-        if (!state.activeChat) {
-          dispatch({
-            type: "SET_ACTIVE_CHAT",
-            payload: {
-              chat_ID: response.chat_ID,
-              chat_title: response.chat_title,
-              messages: [userMessage, aiMessage],
-            },
-          });
-        } else {
-          dispatch({
-            type: "ADD_MESSAGE",
-            payload: { chatId: state.activeChat.chat_ID, message: aiMessage },
-          });
-        }
+        dispatch({ type: "SET_ACTIVE_CHAT", payload: newChat });
+        navigate(`/chat/${response.chat_ID}`);
+      } else {
+        dispatch({
+          type: "ADD_MESSAGE",
+          payload: { chatId: state.activeChat.chat_ID, message: aiMessage },
+        });
       }
     } catch (error) {
       dispatch({ type: "SET_ERROR", payload: "Failed to send message" });
@@ -80,20 +77,26 @@ export function ChatLayout() {
   };
 
   const handleNewChat = () => {
-    dispatch({ type: "SET_ACTIVE_CHAT", payload: null });
+    navigate("/chat");
   };
 
   return (
-    <div className="h-screen flex bg-gray-950">
+    <div className="h-screen flex  w-full">
       <ChatSidebar
         chats={state.chats}
         activeChat={state.activeChat}
-        onSelectChat={(chat) => dispatch({ type: "SET_ACTIVE_CHAT", payload: chat })}
+        onSelectChat={(chat) => {
+          navigate(`/chat/${chat._id}`);
+        }}
         onNewChat={handleNewChat}
       />
-      <div className="flex-1 flex flex-col">
-        <ChatMain messages={state.activeChat?.messages || []} loading={state.loading} />
-        <ChatInput onSendMessage={handleSendMessage} disabled={state.loading} />
+      <div className=" flex flex-col w-full">
+        {children || (
+          <>
+            <ChatMain messages={state.activeChat?.messages || []} loading={state.loading} />
+            <ChatInput onSendMessage={handleSendMessage} disabled={state.loading} />
+          </>
+        )}
       </div>
     </div>
   );

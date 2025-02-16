@@ -16,8 +16,8 @@ export function ChatMain({ messages, loading }: ChatMainProps) {
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto bg-gray-950">
-      <div className="w-11/12 mx-auto">
+    <div className="flex-1 overflow-y-auto">
+      <div className="max-w-3xl mx-auto">
         {messages.map((message, index) => (
           <ChatMessage key={index} message={message} />
         ))}

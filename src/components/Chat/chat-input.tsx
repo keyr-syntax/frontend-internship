@@ -1,44 +1,41 @@
-"use client";
+import React, { useState, FormEvent } from "react";
+import { Send } from "lucide-react";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { SendHorizontal } from "lucide-react";
+interface ChatInputProps {
+  onSendMessage: (message: string) => void;
+  disabled?: boolean;
+}
 
-export function ChatInput({
-  onSend,
-  isLoading,
-}: {
-  onSend: (message: string) => void;
-  isLoading: boolean;
-}) {
-  const [input, setInput] = useState("");
+export function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
+  const [message, setMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (input.trim() && !isLoading) {
-      onSend(input);
-      setInput("");
+    if (message.trim() && !disabled) {
+      onSendMessage(message);
+      setMessage("");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 p-4">
-      <Textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type your message..."
-        className="min-h-[60px] resize-none"
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSubmit(e);
-          }
-        }}
-      />
-      <Button type="submit" size="icon" disabled={isLoading}>
-        <SendHorizontal className="h-4 w-4" />
-      </Button>
+    <form onSubmit={handleSubmit} className="p-4 border-t border-gray-800 bg-gray-900">
+      <div className="flex gap-4">
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type your message..."
+          disabled={disabled}
+          className="flex-1 p-2 bg-gray-800 border border-gray-700 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+        />
+        <button
+          type="submit"
+          disabled={disabled || !message.trim()}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Send className="h-5 w-5" />
+        </button>
+      </div>
     </form>
   );
 }

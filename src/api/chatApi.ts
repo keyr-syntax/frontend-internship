@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChatResponse, ChatsResponse } from "@/lib/types";
 import axios from "axios";
 
@@ -29,7 +30,6 @@ export async function fetchPreviousChats(): Promise<ChatsResponse> {
 
 export async function fetchChat(chatId: string): Promise<ChatResponse> {
   try {
-    console.log(chatId);
     const response = await api.get<ChatResponse>(`/find_chat/${chatId}`);
     return response.data;
   } catch (error) {

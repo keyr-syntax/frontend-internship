@@ -1,6 +1,5 @@
-import { Chat } from "@/lib/types";
+import { Chat } from "@/types/chat";
 import { MessageSquare, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface ChatSidebarProps {
   chats: Chat[];
@@ -9,13 +8,13 @@ interface ChatSidebarProps {
   onNewChat: () => void;
 }
 
-// TODO : CREATE A HERO SECTION THAT SAYS SOMETHING LIKE WELCOME TO YOUR AI THERAPY SESSION AND HAVE DEMO QUESTIONS USERS CAN ASK TO GET STARTED
-
 export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: ChatSidebarProps) {
+  console.log(chats[0]?.id);
+
   return (
-    <div className="w-64 bg-gray-900 border-r h-full flex flex-col">
-      <div className="p-4 border-b-2">
-        <h1>AI THERAPY</h1>
+    <div className="w-64 bg-gray-950 border-r h-full flex flex-col">
+      <div className="p-4 border-b">
+        <h1 className="text-xl font-semibold">AI Chat</h1>
       </div>
       <div className="p-4">
         <button
@@ -31,11 +30,10 @@ export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: Chat
           <button
             key={chat.chat_ID}
             onClick={() => onSelectChat(chat)}
-            className={`w-full flex items-center gap-2 px-4 py-3 hover:bg-gray-900 ${
-              activeChat?.chat_ID === chat.chat_ID ? "bg-gray-900" : ""
+            className={`w-full flex items-center gap-2 p-2 hover:bg-gray-700 mx-2  bg-gray-950 ${
+              activeChat?.chat_ID === chat.chat_ID ? "bg-gray-100" : ""
             }`}
           >
-            <MessageSquare className="h-5 w-5 text-gray-500" />
             <span className="text-sm truncate">{chat.chat_title}</span>
           </button>
         ))}

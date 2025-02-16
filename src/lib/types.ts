@@ -11,6 +11,7 @@ export interface Chat {
 }
 
 export interface ChatResponse {
+  [x: string]: boolean;
   success: boolean;
   message: string;
   chat_ID: string;
