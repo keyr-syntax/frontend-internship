@@ -42,12 +42,10 @@ const Navbar = () => {
             : "md:w-11/12 w-full"
         }`}
       >
-        {/* LOGO */}
         <Link className="flex-shrink-0" to="/">
-          <span className="text-2xl font-stint">AI Therapy.</span>
+          <span className="text-2xl font-stint">Calmify</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center justify-between flex-grow">
           <div className="ml-8 flex gap-6">
             <Link
@@ -112,7 +110,6 @@ const Navbar = () => {
           )}
         </nav>
 
-        {/* Mobile Menu Button */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden">
@@ -122,7 +119,7 @@ const Navbar = () => {
           </SheetTrigger>
           <SheetContent side="right" className="w-[300px]">
             <SheetTitle className="text-left text-2xl font-stint mb-8">
-              AI Therapy.
+              Calmify
             </SheetTitle>
             <nav className="flex flex-col gap-6">
               <Link

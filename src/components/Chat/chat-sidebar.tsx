@@ -4,7 +4,13 @@ import { Plus, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getStoredUser, logout } from "@/lib/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 interface ChatSidebarProps {
   chats: Chat[];
@@ -13,21 +19,26 @@ interface ChatSidebarProps {
   onNewChat: () => void;
 }
 
-export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: ChatSidebarProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+export function ChatSidebar({
+  chats,
+  activeChat,
+  onSelectChat,
+  onNewChat,
+}: ChatSidebarProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const user = getStoredUser();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
-    <div className="w-64 bg-gray-950 border-r h-full flex flex-col">
+    <div className="w-64 bg-gray-950 border-r h-full flex flex-col ">
       <div className="p-4 border-b">
         <Link to="/">
-          <h1 className="text-xl font-semibold">AI Chat</h1>
+          <h1 className="text-xl font-semibold">Calmify</h1>
         </Link>
       </div>
       <div className="p-4">
@@ -36,10 +47,10 @@ export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: Chat
           className="w-full flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         >
           <Plus className="h-5 w-5" />
-          New Chat
+          Start new Chat
         </button>
       </div>
-      <div className="overflow-y-scroll flex-1">
+      <div className="overflow-y-scroll overflow-x-hidden flex-1">
         {chats.map((chat) => (
           <button
             key={chat.chat_ID}
@@ -53,7 +64,6 @@ export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: Chat
         ))}
       </div>
       <div className="p-3 border-t mt-auto">
-        {/* Modal Trigger (Avatar) */}
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger className=" w-full h-full">
             <div className="flex items-center">
@@ -69,7 +79,9 @@ export function ChatSidebar({ chats, activeChat, onSelectChat, onNewChat }: Chat
               <DialogTitle>Logout</DialogTitle>
             </DialogHeader>
             <div className="flex flex-col gap-4">
-              <p className="text-sm text-gray-500">Are you sure you want to log out?</p>
+              <p className="text-sm text-gray-500">
+                Are you sure you want to log out?
+              </p>
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
