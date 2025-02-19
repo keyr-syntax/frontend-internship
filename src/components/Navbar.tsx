@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { isAuthenticated } from "@/lib/auth";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-
+import ScrollIntoView from "react-scroll-into-view";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -54,13 +54,23 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              className="text-md font-medium hover:underline underline-offset-4"
-              to="#about"
-            >
-              About
-            </Link>
 
+            <ScrollIntoView
+              smooth={true}
+              scrollOptions={{
+                behavior: "smooth",
+                block: "start",
+                inline: "start",
+              }}
+              selector="#about"
+            >
+              <Link
+                className="text-md font-medium hover:underline underline-offset-4"
+                to="#about"
+              >
+                About
+              </Link>
+            </ScrollIntoView>
             <Link
               className="text-md font-medium hover:underline underline-offset-4"
               to="/chat"
