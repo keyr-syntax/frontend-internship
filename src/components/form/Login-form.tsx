@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import api from "@/lib/api";
 
 interface LoginResponse {
   success: boolean;
@@ -35,16 +36,10 @@ export default function LoginForm({
     setIsLoading(true);
 
     try {
-      const response = await axios.post<LoginResponse>(
-        "http://localhost:5000/user/login_user",
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.post<LoginResponse>("/user/login_user", {
+        email,
+        password,
+      });
 
       console.log("Login response:", response.data);
 

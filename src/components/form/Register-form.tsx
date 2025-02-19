@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import api from "@/lib/api";
 
 interface RegisterResponse {
   success: boolean;
@@ -36,17 +37,11 @@ export default function RegisterForm({
     setIsLoading(true);
 
     try {
-      const response = await axios.post<RegisterResponse>(
-        "http://localhost:5000/user/create_user",
-        {
-          username,
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.post<RegisterResponse>("/user/create_user", {
+        username,
+        email,
+        password,
+      });
 
       console.log("Registration response:", response.data);
 

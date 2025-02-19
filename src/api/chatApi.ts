@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import api from "@/lib/api";
 import { ChatResponse, ChatsResponse } from "@/lib/types";
-import axios from "axios";
 
-const api = axios.create({
-  baseURL: "http://localhost:5000/chat",
-  withCredentials: true,
-});
-
-export async function sendMessage(chatId: string, message: string): Promise<ChatResponse> {
+export async function sendMessage(
+  chatId: string,
+  message: string
+): Promise<ChatResponse> {
   try {
-    const response = await api.post<ChatResponse>("/chat_with_ai", {
+    const response = await api.post<ChatResponse>("/chat/chat_with_ai", {
       chat_ID: chatId,
       user_question: message,
     });
@@ -21,7 +19,7 @@ export async function sendMessage(chatId: string, message: string): Promise<Chat
 
 export async function fetchPreviousChats(): Promise<ChatsResponse> {
   try {
-    const response = await api.get<ChatsResponse>("/previous_chats");
+    const response = await api.get<ChatsResponse>("/chat/previous_chats");
     return response.data;
   } catch (error) {
     throw new Error("Failed to fetch previous chats");
@@ -30,7 +28,7 @@ export async function fetchPreviousChats(): Promise<ChatsResponse> {
 
 export async function fetchChat(chatId: string): Promise<ChatResponse> {
   try {
-    const response = await api.get<ChatResponse>(`/find_chat/${chatId}`);
+    const response = await api.get<ChatResponse>(`/chat/find_chat/${chatId}`);
     return response.data;
   } catch (error) {
     throw new Error("Failed to fetch chat");
