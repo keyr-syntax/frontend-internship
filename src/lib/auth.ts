@@ -1,4 +1,4 @@
-import api from "./api";
+import BASE_URL from "./api";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
 export interface User {
@@ -7,13 +7,18 @@ export interface User {
   password: string;
 }
 
-export function getStoredUser(): User | null {
-  const userStr = localStorage.getItem("user");
-  if (!userStr) return null;
-
+export async function getStoredUser(): Promise<User | null> {
   try {
-    return JSON.parse(userStr) as User;
-  } catch {
+    const response = await BASE_URL.get("/user/authenticate_user");
+
+    if (response.data.success) {
+      console.log("getStoredUser", response.data.user);
+      return response.data.user as User;
+    } else {
+      return null;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
     return null;
   }
 }
@@ -24,7 +29,7 @@ export function isAuthenticated(): boolean {
 
 export const logout = async (): Promise<void> => {
   try {
-    const response = await api.get("/user/logout_user");
+    const response = await BASE_URL.get("/user/logout_user");
 
     if (response.data.success) {
       toast(response.data.message || "Logout successful!");

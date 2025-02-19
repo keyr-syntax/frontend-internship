@@ -8,14 +8,18 @@ import {
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { isAuthenticated } from "@/lib/auth";
+
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import ScrollIntoView from "react-scroll-into-view";
+import { getStoredUser, User } from "@/lib/auth";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const isAuth = isAuthenticated();
-  console.log(isAuth);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    getStoredUser().then(setUser);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -91,7 +95,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {!isAuth ? (
+          {!user ? (
             <div className="flex items-center gap-3 ml-4">
               <Link to="/register">
                 <Button variant="ghost" size="default">
@@ -164,7 +168,7 @@ const Navbar = () => {
                 Dashboard
               </Link>
 
-              {!isAuth ? (
+              {!user ? (
                 <div className="flex flex-col gap-4 mt-4">
                   <Link to="/register" onClick={() => setIsOpen(false)}>
                     <Button variant="ghost" size="lg" className="w-full">

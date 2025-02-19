@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Chat } from "@/types/chat";
 import { Plus, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getStoredUser, logout } from "@/lib/auth";
+import { getStoredUser, logout, User } from "@/lib/auth";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Dialog,
@@ -26,7 +26,11 @@ export function ChatSidebar({
   onNewChat,
 }: ChatSidebarProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const user = getStoredUser();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    getStoredUser().then(setUser);
+  }, []);
   const navigate = useNavigate();
 
   const handleLogout = () => {
