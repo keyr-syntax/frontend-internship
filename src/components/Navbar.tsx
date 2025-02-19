@@ -1,4 +1,4 @@
-import { Menu, UserIcon } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -7,16 +7,23 @@ import {
 } from "../components/ui/sheet";
 import { Button } from "./ui/button";
 import { useState, useEffect } from "react";
-import { Link, Outlet } from "react-router-dom";
-
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import ScrollIntoView from "react-scroll-into-view";
-import { getStoredUser, User } from "@/lib/auth";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { getStoredUser, logout, User } from "@/lib/auth";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     getStoredUser().then(setUser);
   }, []);
@@ -36,6 +43,10 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <>
@@ -109,13 +120,36 @@ const Navbar = () => {
               </Link>
             </div>
           ) : (
-            <Link to="/chat">
-              <Avatar>
-                <AvatarFallback>
-                  <UserIcon />
-                </AvatarFallback>
-              </Avatar>
-            </Link>
+            <div className="p-3 border-t mt-auto">
+              <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogTrigger className=" w-full h-full">
+                  <div className="flex items-center">
+                    <Avatar className="h-8 w-8 cursor-pointer">
+                      <AvatarImage src="https://github.com/shadcn.png" />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
+                    <span className="ml-2 text-sm">{user?.username}</span>
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Logout</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex flex-col gap-4">
+                    <p className="text-sm text-gray-500">
+                      Are you sure you want to log out?
+                    </p>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      Logout
+                    </button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
           )}
         </nav>
 
@@ -182,13 +216,36 @@ const Navbar = () => {
                   </Link>
                 </div>
               ) : (
-                <Link to="/chat">
-                  <Avatar>
-                    <AvatarFallback>
-                      <UserIcon />
-                    </AvatarFallback>
-                  </Avatar>
-                </Link>
+                <div className="p-3 border-t mt-auto">
+                  <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                    <DialogTrigger className=" w-full h-full">
+                      <div className="flex items-center">
+                        <Avatar className="h-8 w-8 cursor-pointer">
+                          <AvatarImage src="https://github.com/shadcn.png" />
+                          <AvatarFallback>U</AvatarFallback>
+                        </Avatar>
+                        <span className="ml-2 text-sm">{user?.username}</span>
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Logout</DialogTitle>
+                      </DialogHeader>
+                      <div className="flex flex-col gap-4">
+                        <p className="text-sm text-gray-500">
+                          Are you sure you want to log out?
+                        </p>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        >
+                          <LogOut className="h-5 w-5" />
+                          Logout
+                        </button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </div>
               )}
             </nav>
           </SheetContent>
