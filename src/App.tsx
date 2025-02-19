@@ -7,6 +7,9 @@ import ChatPage from "./components/Pages/ChatPage";
 import LoginPage from "./components/Pages/LoginPage";
 import RegisterPage from "./components/Pages/RegisterPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import Dashboard from "./components/Pages/Dashboard";
+import MoodTrackingQuestionsForm from "./components/form/MoodTrackingQuestionsForm";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
@@ -14,7 +17,26 @@ function App() {
       <div className="overflow-y-hidden">
         <Toaster position="top-right" />
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Navbar />}>
+            <Route path="/" element={<HomePage />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/mood_tracking"
+              element={
+                <ProtectedRoute>
+                  <MoodTrackingQuestionsForm />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
@@ -26,6 +48,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/chat/:id"
             element={

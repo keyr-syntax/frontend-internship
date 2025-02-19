@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import api from "./api";
 import { toast } from "@/hooks/use-toast";
 import axios from "axios";
@@ -23,16 +22,13 @@ export function isAuthenticated(): boolean {
   return getStoredUser() !== null;
 }
 
-export const logout = async (
-  navigate: ReturnType<typeof useNavigate>
-): Promise<void> => {
+export const logout = async (): Promise<void> => {
   try {
     const response = await api.get("/user/logout_user");
 
     if (response.data.success) {
       toast(response.data.message || "Logout successful!");
       localStorage.removeItem("user");
-      navigate("/");
     } else {
       toast(response.data.message || "Logout failed");
     }
