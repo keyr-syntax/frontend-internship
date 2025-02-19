@@ -4,10 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import api from "@/lib/api";
+import BASE_URL from "@/lib/api";
 
 interface RegisterResponse {
   success: boolean;
@@ -37,14 +36,16 @@ export default function RegisterForm({
     setIsLoading(true);
 
     try {
-      const response = await api.post<RegisterResponse>("/user/create_user", {
-        username,
-        email,
-        password,
-      });
+      const response = await BASE_URL.post<RegisterResponse>(
+        "/user/create_user",
+        {
+          username,
+          email,
+          password,
+        }
+      );
 
       console.log("Registration response:", response.data);
-
       if (response.data.success) {
         toast(response.data.message);
         navigate("/chat");

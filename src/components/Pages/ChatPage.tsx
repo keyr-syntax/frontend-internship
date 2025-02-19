@@ -23,8 +23,9 @@ export default function ChatPage() {
               type: "SET_ACTIVE_CHAT",
               payload: {
                 chat_ID: id,
-                chat_title: response.chat.chat_title || "Untitled Chat",
-                messages: response.chat.messages.map((msg: any) => ({
+                chat_title:
+                  (response.chat as any).chat_title || "Untitled Chat",
+                messages: (response.chat as any).messages.map((msg: any) => ({
                   role: msg.role,
                   content: msg.content,
                   timestamp: new Date(msg.timestamp),
@@ -35,6 +36,7 @@ export default function ChatPage() {
             toast.error("Chat not found");
             navigate("/chat");
           }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           toast.error("Failed to load chat");
           navigate("/chat");
@@ -45,14 +47,18 @@ export default function ChatPage() {
 
       loadChat();
     } else {
-      // Reset active chat when on /chat route
-      dispatch({ type: "SET_ACTIVE_CHAT", payload: null });
+      dispatch({
+        type: "SET_ACTIVE_CHAT",
+        payload: { chat_ID: "", chat_title: "", messages: [] },
+      });
     }
   }, [id, dispatch, navigate]);
 
   return (
     <div className="h-screen flex">
-      <ChatLayout>{!id && !state.activeChat?.messages?.length && <WelcomeScreen />}</ChatLayout>
+      <ChatLayout>
+        {!id && !state.activeChat?.messages?.length && <WelcomeScreen />}
+      </ChatLayout>
     </div>
   );
 }
