@@ -60,12 +60,7 @@ const Navbar = () => {
             >
               About
             </Link>
-            <Link
-              className="text-md font-medium hover:underline underline-offset-4"
-              to="#services"
-            >
-              Services
-            </Link>
+
             <Link
               className="text-md font-medium hover:underline underline-offset-4"
               to="/chat"
@@ -136,13 +131,7 @@ const Navbar = () => {
               >
                 About
               </Link>
-              <Link
-                className="text-lg font-medium hover:underline underline-offset-4"
-                to="#services"
-                onClick={() => setIsOpen(false)}
-              >
-                Services
-              </Link>
+
               <Link
                 className="text-lg font-medium hover:underline underline-offset-4"
                 onClick={() => setIsOpen(false)}
