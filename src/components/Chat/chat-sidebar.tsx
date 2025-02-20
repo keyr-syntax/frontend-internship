@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Chat } from "@/types/chat";
 import { Plus, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getStoredUser, logout, User } from "@/lib/auth";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Dialog,
@@ -11,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { AuthContext } from "@/context/AuthProvider";
 
 interface ChatSidebarProps {
   chats: Chat[];
@@ -26,15 +26,22 @@ export function ChatSidebar({
   onNewChat,
 }: ChatSidebarProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    getStoredUser().then(setUser);
-  }, []);
+  const authContext = useContext(AuthContext);
+  const user = authContext?.user;
+  const logout = authContext?.logout;
+  const isAuthenticated = authContext?.isAuthenticated;
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!user || !isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, user, navigate]);
+
   const handleLogout = () => {
-    logout();
+    if (logout) {
+      logout();
+    }
     navigate("/");
   };
 

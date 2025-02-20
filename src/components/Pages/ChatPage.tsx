@@ -36,7 +36,7 @@ export default function ChatPage() {
             toast.error("Chat not found");
             navigate("/chat");
           }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           toast.error("Failed to load chat");
           navigate("/chat");

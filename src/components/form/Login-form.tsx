@@ -2,12 +2,13 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "@/lib/api";
+import { AuthContext } from "@/context/AuthProvider";
 
 interface LoginResponse {
   success: boolean;
@@ -23,12 +24,14 @@ export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const authContext = useContext(AuthContext);
+  const setUser = authContext?.setUser;
+  const setIsAuthenticated = authContext?.setIsAuthenticated;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  // const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,14 +43,11 @@ export default function LoginForm({
         email,
         password,
       });
-
-      console.log("Login response:", response.data);
-
       if (response.data.success) {
+        if (setUser) setUser(response.data.user);
+        if (setIsAuthenticated) setIsAuthenticated(true);
         localStorage.setItem("user", JSON.stringify(response.data.user));
-
         toast(response.data.message || "Login successful!");
-
         navigate("/chat");
       } else {
         setError(response.data.message || "Login failed");

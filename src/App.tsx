@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { ChatProvider } from "./context/ChatContext";
@@ -6,10 +5,10 @@ import HomePage from "./components/Pages/HomePage";
 import ChatPage from "./components/Pages/ChatPage";
 import LoginPage from "./components/Pages/LoginPage";
 import RegisterPage from "./components/Pages/RegisterPage";
-import { ProtectedRoute } from "./components/ProtectedRoute";
 import Dashboard from "./components/Pages/Dashboard";
 import MoodTrackingQuestionsForm from "./components/form/MoodTrackingQuestionsForm";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -19,45 +18,20 @@ function App() {
         <Routes>
           <Route path="/" element={<Navbar />}>
             <Route path="/" element={<HomePage />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/mood_tracking"
-              element={
-                <ProtectedRoute>
-                  <MoodTrackingQuestionsForm />
-                </ProtectedRoute>
-              }
-            />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route
+                path="/mood_tracking"
+                element={<MoodTrackingQuestionsForm />}
+              />
+            </Route>
           </Route>
-
+          <Route element={<ProtectedRoute />}>
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/chat/:id" element={<ChatPage />} />
+          </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoute>
-                <ChatPage />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/chat/:id"
-            element={
-              <ProtectedRoute>
-                <ChatPage />
-              </ProtectedRoute>
-            }
-          />
-
           <Route
             path="*"
             element={

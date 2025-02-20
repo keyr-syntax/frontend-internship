@@ -48,7 +48,10 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
           state.activeChat?.chat_ID === action.payload.chatId
             ? {
                 ...state.activeChat,
-                messages: [...state.activeChat.messages, action.payload.message],
+                messages: [
+                  ...state.activeChat.messages,
+                  action.payload.message,
+                ],
               }
             : state.activeChat,
       };
@@ -64,7 +67,11 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
 export function ChatProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(chatReducer, initialState);
 
-  return <ChatContext.Provider value={{ state, dispatch }}>{children}</ChatContext.Provider>;
+  return (
+    <ChatContext.Provider value={{ state, dispatch }}>
+      {children}
+    </ChatContext.Provider>
+  );
 }
 
 export function useChatContext() {
