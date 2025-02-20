@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Chat } from "@/types/chat";
 import { Plus, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -29,14 +29,7 @@ export function ChatSidebar({
   const authContext = useContext(AuthContext);
   const user = authContext?.user;
   const logout = authContext?.logout;
-  const isAuthenticated = authContext?.isAuthenticated;
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user || !isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, user, navigate]);
 
   const handleLogout = () => {
     if (logout) {

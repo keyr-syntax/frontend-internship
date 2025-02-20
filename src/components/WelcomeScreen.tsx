@@ -62,7 +62,6 @@ export function WelcomeScreen() {
 
       dispatch({ type: "SET_ACTIVE_CHAT", payload: newChat });
       navigate(`/chat/${response.chat_ID}`);
-      window.location.reload();
     } catch (error) {
       toast.error("Failed to start chat. Please try again.");
       console.error("Failed to start chat:", error);
