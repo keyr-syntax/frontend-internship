@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import BASE_URL from "@/lib/api";
 
 ChartJS.register(
   CategoryScale,
@@ -35,11 +36,8 @@ const DailyMoodChart = () => {
   useEffect(() => {
     const fetchDailyAverages = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/mood_tracking/mood_tracking_average",
-          {
-            withCredentials: true,
-          }
+        const response = await BASE_URL.get(
+          "/mood_tracking/mood_tracking_average"
         );
         const averages = response.data.dailyAverages;
 
@@ -106,14 +104,14 @@ const DailyMoodChart = () => {
       <div className="flex flex-col justify-start  items-center space-y-2 mb-4">
         {legendLabels.map((item, index) => (
           <div key={index} className="flex items-center space-x-2">
-            <span className={`w-4 h-4 ${item.color} rounded-full`} />
+            <span className={`w-4 h-2 ${item.color} rounded-full`} />
             <span className="text-white text-sm">{item.text}</span>
           </div>
         ))}
       </div>
 
       <div className="w-full max-w-[600px] mx-auto overflow-x-auto rounded-lg">
-        <div className="h-[300px] sm:h-[350px] md:h-[400px] w-full">
+        <div className="h-[300px] sm:h-[300px] md:h-[350px] w-full">
           <Line data={chartData} options={options} />
         </div>
       </div>

@@ -1,5 +1,5 @@
 import BASE_URL from "@/lib/api";
-import { User } from "@/lib/auth";
+import { User } from "@/lib/types";
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";

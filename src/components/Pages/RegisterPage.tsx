@@ -1,8 +1,5 @@
-"use client";
 import signUpImage from "@/assets/signup.jpg";
 import RegisterForm from "../form/Register-form";
-
-
 
 export default function RegisterPage() {
   return (

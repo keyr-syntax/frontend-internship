@@ -11,8 +11,8 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import ScrollIntoView from "react-scroll-into-view";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { AuthContext } from "@/context/AuthProvider";
-
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,9 +20,7 @@ const Navbar = () => {
   const authContext = useContext(AuthContext);
   const user = authContext?.user;
   const logout = authContext?.logout;
-
   const navigate = useNavigate();
-
   const handleLogout = () => {
     if (logout) {
       logout();
@@ -61,13 +59,6 @@ const Navbar = () => {
 
         <nav className="hidden lg:flex items-center justify-between flex-grow  ">
           <div className="ml-8 flex gap-6">
-            <Link
-              className="text-md font-medium hover:underline underline-offset-4"
-              to="#home"
-            >
-              Home
-            </Link>
-
             <ScrollIntoView
               smooth={true}
               scrollOptions={{
