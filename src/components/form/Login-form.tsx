@@ -18,6 +18,7 @@ interface LoginResponse {
     email: string;
     password: string;
   };
+  token: string;
 }
 
 export default function LoginForm({
@@ -47,8 +48,10 @@ export default function LoginForm({
         if (setUser) setUser(response.data.user);
         if (setIsAuthenticated) setIsAuthenticated(true);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem("internship", response.data.token);
+        console.log("Login respnse", response.data);
         toast(response.data.message || "Login successful!");
-        navigate("/chat");
+        navigate("/");
       } else {
         setError(response.data.message || "Login failed");
         toast(response.data.message || "Login failed");

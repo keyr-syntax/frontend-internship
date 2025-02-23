@@ -24,6 +24,7 @@ function ContextProvider({ children }: { children: ReactNode }) {
     try {
       const response = await BASE_URL.get("/user/authenticate_user");
       if (response.data.success) {
+        console.log("Authentication response", response.data);
         setUser(response.data.user);
         setIsAuthenticated(true);
       } else {
@@ -47,6 +48,7 @@ function ContextProvider({ children }: { children: ReactNode }) {
       if (response.data.success) {
         toast(response.data.message || "Logout successful!");
         localStorage.removeItem("user");
+        localStorage.removeItem("internship");
         setUser(response.data.user);
         setIsAuthenticated(response.data.isAuthenticated);
       } else {

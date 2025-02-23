@@ -16,6 +16,7 @@ interface RegisterResponse {
     email: string;
     password: string;
   };
+  token: string;
 }
 
 export default function RegisterForm({
@@ -25,7 +26,6 @@ export default function RegisterForm({
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -42,13 +42,13 @@ export default function RegisterForm({
           username,
           email,
           password,
-        },
-        { withCredentials: true }
+        }
       );
 
       console.log("Registration response:", response.data);
       if (response.data.success) {
         toast(response.data.message);
+        localStorage.setItem("internship", response.data.token);
         navigate("/chat");
       } else {
         setError(response.data.message || "Registration failed");
@@ -69,7 +69,11 @@ export default function RegisterForm({
   };
 
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props} onSubmit={handleSubmit}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Create your account</h1>
         <p className="text-balance text-sm text-muted-foreground">

@@ -57,7 +57,7 @@ export function ChatSidebar({
       <div className="overflow-y-scroll overflow-x-hidden flex-1">
         {chats.map((chat) => (
           <button
-            key={chat.chat_ID}
+            key={chat._id}
             onClick={() => onSelectChat(chat)}
             className={`w-full flex items-center gap-2 p-2 hover:bg-gray-700 mx-2 bg-gray-950 ${
               activeChat?.chat_ID === chat._id ? "bg-slate-700" : ""
