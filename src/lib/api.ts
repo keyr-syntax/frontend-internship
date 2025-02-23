@@ -2,7 +2,7 @@ import axios from "axios";
 
 const BASE_URL = axios.create({
   // baseURL: "http://localhost:8000",
-  baseURL: "https://www.backend-internship-project.keyrunasir.com",
+  baseURL: "https://intern-project-backend-43ao.vercel.app",
   withCredentials: true,
 });
 
