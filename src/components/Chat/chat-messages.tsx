@@ -19,13 +19,21 @@ export function ChatMessage({ message }: ChatMessageProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`flex gap-3 p-4 w-full ${isAI ? "justify-start" : "justify-end"}`}
+      className={`flex gap-3 p-4 w-full ${
+        isAI ? "justify-start" : "justify-end"
+      }`}
     >
-      <div className={`flex gap-3 items-start max-w-2xl ${isAI ? "flex-row" : "flex-row-reverse"}`}>
+      <div
+        className={`flex gap-3 items-start max-w-2xl ${
+          isAI ? "flex-row" : "flex-row-reverse"
+        }`}
+      >
         {/* Profile Icon */}
         <div
           className={`flex-shrink-0 h-9 w-9 rounded-full flex items-center justify-center ${
-            isAI ? "bg-gradient-to-br from-blue-600 to-indigo-500 shadow-lg" : "bg-gray-700"
+            isAI
+              ? "bg-gradient-to-br from-blue-600 to-indigo-500 shadow-lg"
+              : "bg-gray-700"
           }`}
         >
           {isAI ? (
@@ -44,7 +52,9 @@ export function ChatMessage({ message }: ChatMessageProps) {
           }`}
         >
           <div className="flex items-center gap-2">
-            <span className="font-medium text-gray-200">{isAI ? "AI Therapy" : "You"}</span>
+            <span className="font-medium text-gray-200">
+              {isAI ? "AI Therapy" : "You"}
+            </span>
             <span className="text-xs text-gray-500">
               {format(new Date(message.timestamp), "HH:mm")}
             </span>
@@ -56,9 +66,15 @@ export function ChatMessage({ message }: ChatMessageProps) {
               // @ts-expect-error Server Component
               rehypePlugins={[rehypeHighlight]}
               components={{
-                p: ({ node, ...props }) => <p className="mb-4 last:mb-0" {...props} />,
-                strong: ({ node, ...props }) => <strong className="font-semibold" {...props} />,
-                em: ({ node, ...props }) => <em className="italic" {...props} />,
+                p: ({ node, ...props }) => (
+                  <p className="mb-4 last:mb-0" {...props} />
+                ),
+                strong: ({ node, ...props }) => (
+                  <strong className="font-semibold" {...props} />
+                ),
+                em: ({ node, ...props }) => (
+                  <em className="italic" {...props} />
+                ),
                 a: ({ node, ...props }) => (
                   <a
                     className="text-blue-400 hover:text-blue-300 underline"
@@ -68,7 +84,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
                   />
                 ),
                 code: ({ node, ...props }) => (
-                  <code className="bg-gray-800 px-2 py-1 rounded-md text-sm font-mono" {...props} />
+                  <code
+                    className="bg-gray-800 px-2 py-1 rounded-md text-sm font-mono"
+                    {...props}
+                  />
                 ),
                 pre: ({ node, ...props }) => (
                   <pre
