@@ -71,11 +71,13 @@ const DailyMoodChart = () => {
         const response = await BASE_URL.get(
           `/mood_tracking/mood_tracking_average?days=${timeRange}`
         );
-        const formattedData = Object.entries(response.data.dailyAverages).map(([date, value]) => ({
-          timestamp: date,
-          value: value as number,
-          notes: response.data.notes?.[date],
-        }));
+        const formattedData = Object.entries(response.data.dailyAverages).map(
+          ([date, value]) => ({
+            timestamp: date,
+            value: value as number,
+            notes: response.data.notes?.[date],
+          })
+        );
         setMoodData(formattedData);
       } catch (error) {
         console.error("Error fetching mood data:", error);
@@ -90,7 +92,8 @@ const DailyMoodChart = () => {
 
   const chartData = useMemo(() => {
     const sortedData = [...moodData].sort(
-      (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     );
 
     return {
@@ -101,7 +104,9 @@ const DailyMoodChart = () => {
           data: sortedData.map((d) => d.value),
           fill: true,
           borderColor: sortedData.map((d) => getMoodColor(d.value)),
-          backgroundColor: sortedData.map((d) => getMoodColor(d.value).replace("0.8", "0.2")),
+          backgroundColor: sortedData.map((d) =>
+            getMoodColor(d.value).replace("0.8", "0.2")
+          ),
           tension: 0.4,
           pointBackgroundColor: sortedData.map((d) => getMoodColor(d.value)),
           pointRadius: 6,
@@ -168,7 +173,7 @@ const DailyMoodChart = () => {
             const lines = [
               `Mood Level: ${data.value.toFixed(1)}`,
               data.notes ? `Notes: ${data.notes}` : null,
-            ].filter(Boolean);
+            ].filter((line): line is string => line !== null);
             return lines;
           },
         },
@@ -186,7 +191,9 @@ const DailyMoodChart = () => {
               position: "start",
             },
             scaleID: "y",
-            value: moodData.reduce((acc, curr) => acc + curr.value, 0) / moodData.length,
+            value:
+              moodData.reduce((acc, curr) => acc + curr.value, 0) /
+              moodData.length,
           },
         },
       },
@@ -208,7 +215,9 @@ const DailyMoodChart = () => {
             <Select value={timeRange} onValueChange={setTimeRange}>
               <SelectTrigger className="w-[180px] bg-gray-700/50 border-gray-600 text-white">
                 <CalendarDays className="w-4 h-4 mr-2" />
-                <span>{timeRanges.find((r) => r.value === timeRange)?.label}</span>
+                <span>
+                  {timeRanges.find((r) => r.value === timeRange)?.label}
+                </span>
               </SelectTrigger>
               <SelectContent className="bg-gray-700 border-gray-600">
                 {timeRanges.map((range) => (
@@ -242,7 +251,8 @@ const DailyMoodChart = () => {
                   <span className="text-sm text-white">
                     Average Mood:{" "}
                     {(
-                      moodData.reduce((acc, curr) => acc + curr.value, 0) / moodData.length
+                      moodData.reduce((acc, curr) => acc + curr.value, 0) /
+                      moodData.length
                     ).toFixed(1)}
                   </span>
                 </div>
@@ -251,8 +261,13 @@ const DailyMoodChart = () => {
                     key={mood}
                     className="flex items-center space-x-2 bg-gray-700/30 p-2 rounded"
                   >
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                    <span className="text-sm text-white capitalize">{mood}</span>
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: color }}
+                    />
+                    <span className="text-sm text-white capitalize">
+                      {mood}
+                    </span>
                   </div>
                 ))}
               </div>

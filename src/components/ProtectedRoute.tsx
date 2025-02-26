@@ -16,14 +16,6 @@ const ProtectedRoute = () => {
     handleAuthentication();
   }, [authenticateUser]);
 
-  // useEffect(() => {
-  //   console.log("isAuthenticated:", isAuthenticated);
-  // }, [isAuthenticated]);
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 

@@ -24,30 +24,16 @@ function ContextProvider({ children }: { children: ReactNode }) {
 
   const authenticateUser = useCallback(async () => {
     setLoading(true);
-    const internship = localStorage.getItem("internship");
+    const user = localStorage.getItem("user");
 
-    if (!internship) {
+    if (!user) {
       setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await BASE_URL.get("/user/authenticate_user");
-      if (response.data.success) {
-        console.log("Authentication response", response.data);
-        setUser(response.data.user);
-        setIsAuthenticated(true);
-        setLoading(false);
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
-        setLoading(false);
-      }
-    } catch (error) {
-      console.log("Error while authenticating user", error);
-      setUser(null);
       setIsAuthenticated(false);
+      setUser(null);
+    } else {
       setLoading(false);
+      setIsAuthenticated(true);
+      setUser(JSON.parse(user));
     }
   }, []);
 
@@ -61,7 +47,7 @@ function ContextProvider({ children }: { children: ReactNode }) {
       if (response.data.success) {
         toast(response.data.message || "Logout successful!");
         localStorage.removeItem("user");
-        localStorage.removeItem("internship");
+
         setUser(response.data.user);
         setIsAuthenticated(response.data.isAuthenticated);
       } else {
