@@ -102,7 +102,7 @@
 // }
 import { useContext, useState } from "react";
 import { Chat } from "@/types/chat";
-import { Plus, LogOut, Menu } from "lucide-react";
+import { Plus, LogOut, Menu, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -141,24 +141,33 @@ export function ChatSidebar({
     navigate("/");
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
   return (
-    <div className="relative">
-      <button title="toggle" className="md:hidden p-2" onClick={toggleSidebar}>
-        <Menu className="h-6 w-6" />
-      </button>
+    <div>
+      <div className="md:hidden p-4">
+        <button
+          title="menu"
+          onClick={() => setIsSidebarOpen(true)}
+          className="text-white"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+      </div>
       <div
-        className={`fixed md:relative top-0 left-0 w-64 bg-gray-950 border-r h-full flex flex-col transform ${
+        className={`fixed inset-0 z-50 bg-gray-950 transition-transform transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 transition-transform duration-300 ease-in-out`}
+        } md:relative md:translate-x-0 md:w-64 md:flex md:flex-col`}
       >
-        <div className="p-4 border-b">
+        <div className="p-4 border-b flex justify-between items-center">
           <Link to="/">
             <h1 className="text-xl font-semibold">Calmify</h1>
           </Link>
+          <button
+            title="icon"
+            onClick={() => setIsSidebarOpen(false)}
+            className="md:hidden text-white"
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
         <div className="p-4">
           <button
