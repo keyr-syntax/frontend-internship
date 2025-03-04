@@ -27,6 +27,7 @@ export function ChatSidebar({
 }: ChatSidebarProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [closeMenu, setCloseMenu] = useState(false);
   const authContext = useContext(AuthContext);
   const user = authContext?.user;
   const logout = authContext?.logout;
@@ -41,14 +42,17 @@ export function ChatSidebar({
 
   return (
     <>
-      {/* Hamburger Menu */}
-      <button
-        title="menu"
-        className="md:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded"
-        onClick={() => setIsSidebarOpen(true)}
-      >
-        <Menu className="h-6 w-6" />
-      </button>
+      {!closeMenu && (
+        <span className="md:hidden fixed top-4 left-4 z-50 rounded cursor-pointer">
+          <Menu
+            size={35}
+            onClick={() => {
+              setIsSidebarOpen(true);
+              setCloseMenu(true);
+            }}
+          />
+        </span>
+      )}
 
       {/* Sidebar */}
       <div
@@ -57,13 +61,16 @@ export function ChatSidebar({
         } md:flex`}
       >
         {/* Close Button (for mobile) */}
-        <button
+        <span
           title="close"
-          className="md:hidden absolute top-4 right-4 text-white"
-          onClick={() => setIsSidebarOpen(false)}
+          className="md:hidden absolute top-5 right-4 text-white cursor-pointer"
+          onClick={() => {
+            setIsSidebarOpen(false);
+            setCloseMenu(false);
+          }}
         >
-          <X className="h-6 w-6" />
-        </button>
+          <X size={35} />
+        </span>
 
         <div className="p-4 border-b">
           <Link to="/">
