@@ -43,7 +43,7 @@ export function ChatSidebar({
   return (
     <>
       {!closeMenu && (
-        <span className="md:hidden absolute top-5 right-4 text-white cursor-pointer z-50 p-1">
+        <span className="md:hidden fixed top-4 left-4 z-50 rounded cursor-pointer">
           <Menu
             size={35}
             onClick={() => {
