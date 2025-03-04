@@ -71,9 +71,9 @@ export function WelcomeScreen() {
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center px-4 py-8 overflow-y-auto">
+    <div className="w-full h-full flex flex-col items-center justify-start px-4 py-8 overflow-y-auto">
       <div className="max-w-4xl w-full space-y-8 mb-[180px] ">
-        <div className="text-center space-y-4 mt-[180px]">
+        <div className="text-center space-y-4 pt-[100px]">
           <h1 className="text-4xl font-bold text-gray-300">
             Welcome to Calmify. Your AI Therapy Companion
           </h1>
