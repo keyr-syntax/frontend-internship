@@ -47,7 +47,10 @@ export function ChatLayout({ children }: { children?: React.ReactNode }) {
 
     try {
       dispatch({ type: "SET_LOADING", payload: true });
-      const response = await sendMessage(state.activeChat?.chat_ID || "", content);
+      const response = await sendMessage(
+        state.activeChat?.chat_ID || "",
+        content
+      );
 
       const aiMessage = {
         role: "assistant" as const,
@@ -92,13 +95,19 @@ export function ChatLayout({ children }: { children?: React.ReactNode }) {
         onNewChat={handleNewChat}
       />
       <div className=" flex flex-col w-full">
-        <h1 className="w-full text-center sticky left-0 right-5 top-0 z-50 backdrop-blur- p-4 ">
+        <h1 className="w-full text-center sticky z-[-1] backdrop-blur- p-4 ">
           {state.activeChat?.chat_title}
         </h1>
         {children || (
           <>
-            <ChatMain messages={state.activeChat?.messages || []} loading={state.loading} />
-            <ChatInput onSendMessage={handleSendMessage} disabled={state.loading} />
+            <ChatMain
+              messages={state.activeChat?.messages || []}
+              loading={state.loading}
+            />
+            <ChatInput
+              onSendMessage={handleSendMessage}
+              disabled={state.loading}
+            />
           </>
         )}
       </div>
