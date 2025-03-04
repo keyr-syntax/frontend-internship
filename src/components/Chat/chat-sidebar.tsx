@@ -43,7 +43,7 @@ export function ChatSidebar({
   return (
     <>
       {!closeMenu && (
-        <span className="md:hidden fixed top-4 left-4 z-50 rounded cursor-pointer">
+        <span className="md:hidden absolute top-5 right-4 text-white cursor-pointer z-50 p-1">
           <Menu
             size={35}
             onClick={() => {
@@ -54,16 +54,14 @@ export function ChatSidebar({
         </span>
       )}
 
-      {/* Sidebar */}
       <div
         className={`fixed inset-y-0 left-0 w-64 bg-gray-950 border-r h-full flex flex-col transform transition-transform md:relative md:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:flex`}
       >
-        {/* Close Button (for mobile) */}
         <span
           title="close"
-          className="md:hidden absolute top-5 right-4 text-white cursor-pointer"
+          className="md:hidden absolute top-5 right-4 text-white cursor-pointer z-50 p-1"
           onClick={() => {
             setIsSidebarOpen(false);
             setCloseMenu(false);
